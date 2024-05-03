@@ -32,7 +32,7 @@ function App() {
     <h1>Flip Game</h1>
     <div>
       {board.map((row, r) => {
-          return (
+          return(
             <div 
               key={r} 
               style={{
