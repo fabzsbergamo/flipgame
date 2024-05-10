@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react'
-import './App.css'
+import { useState, useEffect } from 'react';
+import './App.css';
 import useEmojis from './useEmojis';
-
-
 
 // Function to shuffle an array using Fisher-Yates algorithm
 const shuffleArray = (array: any[]) => {
@@ -16,6 +14,8 @@ const shuffleArray = (array: any[]) => {
 function App() {
   const [level, setLevel] = useState(2);
   const [board, setBoard] = useState<any[]>([]);
+  const [selectedEmoji, setSelectedEmoji] = useState("");
+
   const { data, error, isLoading } = useEmojis();
 
   useEffect(() => {
@@ -24,6 +24,12 @@ function App() {
       // Set the first row with shuffled emojis
       const firstRowEmojis = shuffleArray(emojis).slice(0, level);
       setBoard([firstRowEmojis]);
+
+      // Select a random emoji from the first row
+      const randomEmojiIndex = Math.floor(Math.random() * firstRowEmojis.length);
+      const randomEmoji = firstRowEmojis[randomEmojiIndex];
+      const randomEmojiSkin = randomEmoji.skins[0]; // Assuming you want to use the first skin
+      setSelectedEmoji(randomEmojiSkin.unified);
 
       // Generate subsequent rows with shuffled emojis based on the first row
       for (let i = 1; i < level; i++) {
@@ -81,9 +87,17 @@ function App() {
         <p>
           Find all the following emojis before the time runs out!
         </p>
+        <div>
+          <img
+            key={`${selectedEmoji}`}
+            src={`https://twemoji.maxcdn.com/v/13.1.0/svg/${selectedEmoji}.svg`}
+            alt={`${selectedEmoji} skin`}
+            style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', }}
+          />
+        </div>
       </div>
     </>
-  )
+  );
 }
 
 export default App;
