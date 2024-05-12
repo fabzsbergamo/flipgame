@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import useEmojis from './useEmojis';
+import EmojiCard from './EmojiCard';
 
 // Function to shuffle an array using Fisher-Yates algorithm
 const shuffleArray = (array: any[]) => {
@@ -15,7 +16,7 @@ function App() {
   const [level, setLevel] = useState(2);
   const [board, setBoard] = useState<any[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState("");
-
+  
   const { data, error, isLoading } = useEmojis();
 
   useEffect(() => {
@@ -32,20 +33,15 @@ function App() {
       setSelectedEmoji(randomEmojiSkin.unified);
 
       // Generate subsequent rows with shuffled emojis based on the first row
-      for (let i = 1; i < level; i++) {
-        const shuffledRowEmojis = shuffleArray(firstRowEmojis.slice());
-        setBoard((prevBoard) => [...prevBoard, shuffledRowEmojis]);
-      }
+      const subsequentRows = Array.from({ length: level - 1 }, () =>
+        shuffleArray(firstRowEmojis.slice())
+      );
+      setBoard((prevBoard) => [...prevBoard, ...subsequentRows]);
     }
   }, [data, level]);
 
   const handleLevel = () => {
     setLevel((prevLevel) => prevLevel + 1);
-  };
-
-  const handleClick = (rowIndex: number, colIndex: number) => {
-    console.log("Clicked:", rowIndex, colIndex);
-    // Add your logic for handling clicks here
   };
 
   if (isLoading) return <p>isLoading...</p>;
@@ -65,18 +61,13 @@ function App() {
               justifyContent: 'center',
             }}
           >
-            {row.map((emoji: Emoji, colIndex: number) => {
-              const skin = emoji.skins[0]; // Assuming you want to use the first skin
-              return (
-                <img
-                  key={`${rowIndex}-${colIndex}`}
-                  onClick={() => handleClick(rowIndex, colIndex)}
-                  src={`https://twemoji.maxcdn.com/v/13.1.0/svg/${skin.unified}.svg`}
-                  alt={`${emoji.name} skin`}
-                  style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', }}
-                />
-              );
-            })}
+            {row.map((emoji: any, colIndex: number) => (
+              <EmojiCard
+                key={`${rowIndex}-${colIndex}`}
+                emoji={emoji}
+                onClick={() => console.log("Clicked:", rowIndex, colIndex)}
+              />
+            ))}
           </div>
         ))}
       </div>
