@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactCardFlip from "react-card-flip";
 
     const EmojiCard = ({ emoji, onClick }: { emoji: any; onClick: () => void; }) => {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [timerActive, setTimerActive] = useState(true);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsFlipped(true);
+        setTimerActive(false); // Disable the timer
+      }, 5000);
+  
+      return () => clearTimeout(timer);
+    }, []);
   
     const handleClick = () => {
-      setIsFlipped(!isFlipped);
-      onClick();
+      if (!timerActive) {
+        setIsFlipped(!isFlipped);
+        onClick();
+      }
     };
   
     const skin = emoji.skins[0]; // Assuming you want to use the first skin

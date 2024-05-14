@@ -42,6 +42,8 @@ function App() {
 
   const handleLevel = () => {
     setLevel((prevLevel) => prevLevel + 1);
+    setBoard([]); // Reset the board
+    setFlipState([]); // Reset the flip state
   };
 
   if (isLoading) return <p>isLoading...</p>;
@@ -92,3 +94,7 @@ function App() {
 }
 
 export default App;
+function setFlipState(arg0: never[]) {
+  throw new Error('Function not implemented.');
+}
+
