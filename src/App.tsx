@@ -16,6 +16,8 @@ function App() {
   const [level, setLevel] = useState(2);
   const [board, setBoard] = useState<any[]>([]);
   const [selectedEmoji, setSelectedEmoji] = useState("");
+  const [isFlipped, setIsFlipped] = useState<boolean[]>([]);
+  const [timerActive, setTimerActive] = useState(true);
   
   const { data, error, isLoading } = useEmojis();
 
@@ -37,13 +39,35 @@ function App() {
         shuffleArray(firstRowEmojis.slice())
       );
       setBoard((prevBoard) => [...prevBoard, ...subsequentRows]);
+
+      // Initialize flip state for each card
+      const initialFlipStates = Array(firstRowEmojis.length * level).fill(true);
+      setIsFlipped(initialFlipStates);
+
+      const timer = setTimeout(() => {
+        setIsFlipped(Array(firstRowEmojis.length * level).fill(false));
+        setTimerActive(false); // Disable the timer
+      }, 5000);
+  
+      return () => clearTimeout(timer);
     }
   }, [data, level]);
+
+  const handleClick = (index: number) => {
+    if (!timerActive) {
+      setIsFlipped((prevFlipStates) => {
+        const newFlipStates = [...prevFlipStates];
+        newFlipStates[index] = !newFlipStates[index];
+        return newFlipStates;
+      });
+    }
+  };
 
   const handleLevel = () => {
     setLevel((prevLevel) => prevLevel + 1);
     setBoard([]); // Reset the board
-    setFlipState([]); // Reset the flip state
+    setIsFlipped([]); // Reset the flip state
+    setTimerActive(true); // Reset the timer
   };
 
   if (isLoading) return <p>isLoading...</p>;
@@ -63,19 +87,23 @@ function App() {
               justifyContent: 'center',
             }}
           >
-            {row.map((emoji: any, colIndex: number) => (
-              <EmojiCard
-                key={`${rowIndex}-${colIndex}`}
-                emoji={emoji}
-                onClick={() => console.log("Clicked:", rowIndex, colIndex)}
-              />
-            ))}
+            {row.map((emoji: any, colIndex: number) => {
+              const index = rowIndex * level + colIndex;
+              return (
+                <EmojiCard
+                  key={`${rowIndex}-${colIndex}`}
+                  emoji={emoji}
+                  onClick={() => handleClick(index)}
+                  isFlipped={!isFlipped[index]}
+                />
+              );
+            })}
           </div>
         ))}
       </div>
       <div className="card">
         <button onClick={handleLevel}>
-          Level {level -1}
+          Level {level - 1}
         </button>
         <p>
           Find all the following emojis before the time runs out!
@@ -94,7 +122,3 @@ function App() {
 }
 
 export default App;
-function setFlipState(arg0: never[]) {
-  throw new Error('Function not implemented.');
-}
-

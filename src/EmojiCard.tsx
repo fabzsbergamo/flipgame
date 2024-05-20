@@ -1,42 +1,23 @@
-import { useEffect, useState } from "react";
 import ReactCardFlip from "react-card-flip";
 
-    const EmojiCard = ({ emoji, onClick }: { emoji: any; onClick: () => void; }) => {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [timerActive, setTimerActive] = useState(true);
-
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setIsFlipped(true);
-        setTimerActive(false); // Disable the timer
-      }, 5000);
-  
-      return () => clearTimeout(timer);
-    }, []);
-  
-    const handleClick = () => {
-      if (!timerActive) {
-        setIsFlipped(!isFlipped);
-        onClick();
-      }
-    };
+const EmojiCard = ({ emoji, isFlipped, onClick }:{emoji: any; isFlipped: boolean; onClick: () => void;}) => {
   
     const skin = emoji.skins[0]; // Assuming you want to use the first skin
-  
-    return (
-      <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
+
+  return (
+    <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
+      <div onClick={onClick} style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
         <img
-          onClick={handleClick}
           src={`https://twemoji.maxcdn.com/v/13.1.0/svg/${skin.unified}.svg`}
           alt={`${emoji.name} skin`}
-          style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', }}
+          style={{ width: "50px", height: "50px" }}
         />
-        <div
-          onClick={handleClick}
-          style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', }}
-        />
-      </ReactCardFlip>
-    );
-  };
+      </div>
+      <div onClick={onClick} style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backgroundColor: '#f0f0f0' }}>
+        {/* This side is displayed when the card is flipped */}
+      </div>
+    </ReactCardFlip>
+  );
+};
 
 export default EmojiCard;
