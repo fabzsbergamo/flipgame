@@ -53,15 +53,27 @@ function App() {
     }
   }, [data, level]);
 
-  const handleClick = (index: number) => {
+  const handleClick = (emoji: any, index: number) => {
     if (!timerActive) {
+      const unifiedEmoji = emoji.skins[0].unified;
       setIsFlipped((prevFlipStates) => {
         const newFlipStates = [...prevFlipStates];
-        newFlipStates[index] = !newFlipStates[index];
+        newFlipStates[index] = true;
         return newFlipStates;
       });
+
+      if (unifiedEmoji !== selectedEmoji) {
+        setTimeout(() => {
+          setIsFlipped((prevFlipStates) => {
+            const newFlipStates = [...prevFlipStates];
+            newFlipStates[index] = false;
+            return newFlipStates;
+          });
+        }, 1000);
+      }
     }
   };
+  
 
   const handleLevel = () => {
     setLevel((prevLevel) => prevLevel + 1);
@@ -93,7 +105,7 @@ function App() {
                 <EmojiCard
                   key={`${rowIndex}-${colIndex}`}
                   emoji={emoji}
-                  onClick={() => handleClick(index)}
+                  onClick={() => handleClick(emoji, index)}
                   isFlipped={!isFlipped[index]}
                 />
               );
