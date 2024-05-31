@@ -18,6 +18,7 @@ function App() {
   const [selectedEmoji, setSelectedEmoji] = useState("");
   const [isFlipped, setIsFlipped] = useState<boolean[]>([]);
   const [timerActive, setTimerActive] = useState(true);
+  const [winRound, setWinRound] = useState(false)
   
   const { data, error, isLoading } = useEmojis();
 
@@ -50,11 +51,14 @@ function App() {
       }, 5000);
   
       return () => clearTimeout(timer);
+
     }
   }, [data, level]);
 
-  const handleClick = (emoji: any, index: number) => {
-    if (!timerActive) {
+ const handleClick = (emoji: any, index: number) => {
+  if (timerActive || winRound) return; // Disable click if timer is active or round is won
+  
+  if (!timerActive) {
       const unifiedEmoji = emoji.skins[0].unified;
       setIsFlipped((prevFlipStates) => {
         const newFlipStates = [...prevFlipStates];
@@ -70,6 +74,15 @@ function App() {
             return newFlipStates;
           });
         }, 1000);
+      } else {
+        // Check if all matching cards are flipped
+        setWinRound((prevWinRound) => {
+          const allMatchedFlipped = board.flat().every((emoji, i) => {
+            const emojiUnified = emoji.skins[0].unified;
+            return emojiUnified === selectedEmoji ? isFlipped[i] || i === index : true;
+          });
+          return allMatchedFlipped ? true : prevWinRound;
+        });
       }
     }
   };
@@ -80,6 +93,7 @@ function App() {
     setBoard([]); // Reset the board
     setIsFlipped([]); // Reset the flip state
     setTimerActive(true); // Reset the timer
+    setWinRound(false)
   };
 
   if (isLoading) return <p>isLoading...</p>;
@@ -118,7 +132,7 @@ function App() {
           Level {level - 1}
         </button>
         <p>
-          Find all the following emojis before the time runs out!
+          {!winRound ? 'Find all the following emojis before the time runs out!' : 'You Win'}
         </p>
         <div>
           <img

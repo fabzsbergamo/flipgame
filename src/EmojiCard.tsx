@@ -1,6 +1,6 @@
 import ReactCardFlip from "react-card-flip";
 
-const EmojiCard = ({ emoji, isFlipped, onClick }:{emoji: any; isFlipped: boolean; onClick: () => void;}) => {
+const EmojiCard = ({ emoji, isFlipped, onClick, key}:{emoji: any; isFlipped: boolean; onClick: () => void; key: string}) => {
   
     const skin = emoji.skins[0]; // Assuming you want to use the first skin
 
@@ -13,8 +13,9 @@ const EmojiCard = ({ emoji, isFlipped, onClick }:{emoji: any; isFlipped: boolean
           style={{ width: "50px", height: "50px" }}
         />
       </div>
-      <div onClick={onClick} style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backgroundColor: '#f0f0f0' }}>
+      <div onClick={onClick} style={{ width: "50px", height: "50px", margin: "5px", border: 'solid black 1px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', backgroundColor: 'black', }}>
         {/* This side is displayed when the card is flipped */}
+        {key}
       </div>
     </ReactCardFlip>
   );
