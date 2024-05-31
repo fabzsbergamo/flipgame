@@ -129,7 +129,7 @@ function App() {
       </div>
       <div className="card">
         <button onClick={handleLevel}>
-          Level {level - 1}
+        {!winRound ? `Level ${level - 1}` : 'Next Round'}
         </button>
         <p>
           {!winRound ? 'Find all the following emojis before the time runs out!' : 'You Win'}
